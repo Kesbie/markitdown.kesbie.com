@@ -1,0 +1,25 @@
+services:
+  md2x:
+    build: .
+    image: md2x:latest
+    container_name: md2x
+    restart: unless-stopped
+    environment:
+      MD2X_MAX_FILE_MB: "200"
+      MD2X_MAX_FILES: "50"
+    # Chỉ mở ra localhost; nginx trên host proxy vào đây.
+    # Muốn nginx chạy trong docker thì bỏ ports, dùng chung network.
+    ports:
+      - "127.0.0.1:8765:8765"
+    # Convert chạy hoàn toàn trong RAM, không cần volume.
+    tmpfs:
+      - /tmp:size=512m
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 2g
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

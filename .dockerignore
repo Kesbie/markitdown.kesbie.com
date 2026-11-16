@@ -1,0 +1,12 @@
+.git
+.gitignore
+.venv
+.uvcache
+__pycache__
+*.py[cod]
+samples
+deploy
+run.sh
+docker-compose.yml
+Dockerfile
+.dockerignore

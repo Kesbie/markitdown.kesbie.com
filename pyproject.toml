@@ -1,0 +1,28 @@
+[project]
+name = "md2x"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "kesbie", email = "kesbie.nguyen@gmail.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.163.1",
+    "markitdown[all]>=0.1.9",
+    "python-multipart>=0.0.33",
+    "uvicorn[standard]>=0.54.0",
+]
+
+[project.scripts]
+md2x = "md2x:main"
+
+[build-system]
+requires = ["uv_build>=0.12.7,<0.13.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "openpyxl>=3.1.5",
+    "python-docx>=1.2.0",
+]

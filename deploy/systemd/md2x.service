@@ -1,0 +1,65 @@
+# md2x chạy nền bằng systemd
+#
+# Cài đặt:
+#   sudo useradd -r -s /usr/sbin/nologin -d /opt/md2x md2x
+#   sudo git clone <repo> /opt/md2x   (hoặc rsync code lên /opt/md2x)
+#   sudo chown -R md2x:md2x /opt/md2x
+#   sudo -u md2x bash -c 'cd /opt/md2x && uv sync'    # cài phụ thuộc trước
+#   sudo cp deploy/systemd/md2x.service /etc/systemd/system/
+#   sudo systemctl daemon-reload && sudo systemctl enable --now md2x
+#   sudo systemctl status md2x
+#   journalctl -u md2x -f        # xem log
+#
+# uv cài ở đâu thì sửa ExecStart cho khớp (which uv):
+#   /usr/local/bin/uv  hoặc  /root/.local/bin/uv  hoặc  /home/md2x/.local/bin/uv
+
+[Unit]
+Description=md2x — convert tài liệu sang Markdown
+Documentation=https://github.com/microsoft/markitdown
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=exec
+User=md2x
+Group=md2x
+WorkingDirectory=/opt/md2x
+
+Environment=UV_CACHE_DIR=/opt/md2x/.uvcache
+Environment=MD2X_MAX_FILE_MB=200
+Environment=MD2X_MAX_FILES=50
+# Không để uv tự cài/đổi version lúc chạy production.
+Environment=UV_FROZEN=1
+
+ExecStart=/usr/local/bin/uv run md2x serve --host 127.0.0.1 --port 8765 --no-open
+
+Restart=always
+RestartSec=5
+TimeoutStopSec=30
+KillMode=mixed
+
+# --- Siết quyền ---
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/md2x
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+RestrictNamespaces=true
+LockPersonality=true
+# Chỉ cần mạng IP thường (app có gọi ra ngoài khi convert URL).
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+
+# Chặn một tiến trình ngốn hết RAM máy. Chỉnh theo VPS của anh.
+MemoryMax=2G
+TasksMax=256
+
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=md2x
+
+[Install]
+WantedBy=multi-user.target
