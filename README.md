@@ -19,6 +19,16 @@ Chưa có `uv`? Cài một dòng:
 curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
+Không cài được uv (ví dụ Android/Termux — script cài tải binary glibc, không
+chạy trên bionic)? `run.sh` vẫn chạy được với venv do pip tạo:
+
+```bash
+python3 -m venv .venv && .venv/bin/pip install -e .
+./run.sh
+```
+
+Chi tiết cho điện thoại Android đã root: [deploy/android/README.md](<deploy/android/README.md>).
+
 ## CLI
 
 ```bash
@@ -51,6 +61,9 @@ metadata + OCR nếu có), audio (mp3/wav/m4a/flac — transcript).
 ```bash
 docker compose up -d --build          # hoặc dùng systemd, xem deploy/README.md
 ```
+
+Android đã root: không cài được uv/wheel glibc trực tiếp, chạy trong Ubuntu qua
+`proot-distro` — xem [deploy/android/README.md](<deploy/android/README.md>).
 
 Nginx config có sẵn trong [deploy/nginx/](<deploy/nginx/>) — ba bản: domain
 riêng có HTTPS, bản có mật khẩu, và bản gắn dưới subpath `/md2x/`.

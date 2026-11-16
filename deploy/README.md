@@ -44,6 +44,18 @@ curl localhost:8765/healthz
 
 Rồi vẫn dùng [md2x.conf](<nginx/md2x.conf>) ở nginx trên host như bước 4 ở trên.
 
+## Cách 3 — Android đã root (Termux)
+
+Android/Termux dùng libc bionic, còn `uv` và phần lớn wheel Python (pydantic-core,
+onnxruntime, uvloop...) chỉ có bản cho glibc — nên `uv sync` và `pip install`
+đều fail ở đó. Cách chạy được: dùng `proot-distro` để vào Ubuntu (glibc) rồi
+làm y như Cách 1/Cách 2, không cần nginx.
+
+Xem hướng dẫn đầy đủ: [android/README.md](<android/README.md>).
+
+Nếu chỉ muốn chạy trên máy tính mà không cài uv: `python3 -m venv .venv &&
+.venv/bin/pip install -e .` rồi `./run.sh` (script tự thấy `.venv`).
+
 ## Chọn file nginx nào
 
 | File | Dùng khi |

@@ -17,9 +17,14 @@ dependencies = [
 [project.scripts]
 md2x = "md2x:main"
 
+# hatchling là backend thuần Python: cài được bằng pip ở mọi nền tảng,
+# kể cả Android/Termux (uv_build không phát hành wheel cho Android).
 [build-system]
-requires = ["uv_build>=0.12.7,<0.13.0"]
-build-backend = "uv_build"
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/md2x"]
 
 [dependency-groups]
 dev = [
